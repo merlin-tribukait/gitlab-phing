@@ -44,4 +44,4 @@ ADD runner.sh /usr/bin/runner.sh
 RUN mkdir /root/.ssh 
 ADD config /root/.ssh 
 ENV PATH="/root/.composer/vendor/bin:${PATH}"
-ENTRYPOINT ['runner.sh']
+ENTRYPOINT ['/usr/bin/runner.sh']
