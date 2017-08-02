@@ -40,8 +40,9 @@ RUN mv composer.phar /usr/bin/composer
 RUN chmod +x /usr/bin/composer
 RUN composer global require hirak/prestissimo
 RUN composer global require phing/phing pear/versioncontrol_git:"dev-master"
-COPY runner.sh /usr/bin/runner.sh
+COPY runner.sh /runner.sh
 RUN mkdir /root/.ssh 
 COPY config /root/.ssh 
 ENV PATH="/root/.composer/vendor/bin:${PATH}"
-CMD ['/usr/bin/runner.sh']
+RUN chmod +x /runner.sh
+ENTRYPOINT ["/runner.sh"]

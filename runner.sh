@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 cd $DRONE_WORKSPACE
 if [ -z "$PLUGIN_BUILDFILE" ]; then
     export PLUGIN_BUILDFILE='build.yml'
