@@ -45,4 +45,4 @@ RUN mkdir /root/.ssh
 COPY config /root/.ssh 
 ENV PATH="/root/.composer/vendor/bin:${PATH}"
 RUN chmod +x /runner.sh
-ENTRYPOINT ["/runner.sh"]
+CMD ["/runner.sh"]
