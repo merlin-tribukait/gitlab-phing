@@ -41,5 +41,7 @@ RUN chmod +x /usr/bin/composer
 RUN composer global require hirak/prestissimo
 RUN composer global require phing/phing pear/versioncontrol_git:"dev-master"
 ADD runner.sh /runner.sh
+RUN mkdir /root/.ssh 
+ADD config /root/.ssh 
 ENV PATH="/root/.composer/vendor/bin:${PATH}"
 ENTRYPOINT ['runner.sh']
