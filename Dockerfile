@@ -44,4 +44,4 @@ COPY runner.sh /usr/bin/runner.sh
 RUN mkdir /root/.ssh 
 COPY config /root/.ssh 
 ENV PATH="/root/.composer/vendor/bin:${PATH}"
-ENTRYPOINT ['/usr/bin/runner.sh']
+CMD ['/usr/bin/runner.sh']
