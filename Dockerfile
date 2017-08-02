@@ -44,5 +44,4 @@ COPY runner.sh /runner.sh
 RUN mkdir /root/.ssh 
 COPY config /root/.ssh 
 ENV PATH="/root/.composer/vendor/bin:${PATH}"
-RUN chmod +x /runner.sh
-CMD ["/runner.sh"]
+CMD ["phing", "-f $PLUGIN_BUILDFILE"]
