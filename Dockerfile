@@ -42,6 +42,7 @@ RUN composer global require hirak/prestissimo
 RUN composer global require phing/phing pear/versioncontrol_git:"dev-master"
 COPY runner.sh /runner.sh
 RUN mkdir /root/.ssh 
+COPY .gitconfig /root/.gitconfig
 COPY config /root/.ssh 
 ENV PATH="/root/.composer/vendor/bin:${PATH}"
 CMD ["/runner.sh"]
