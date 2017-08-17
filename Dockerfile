@@ -79,4 +79,5 @@ COPY config /root/.ssh
 ENV PATH="/root/.composer/vendor/bin:${PATH}"
 COPY runner.sh /runner.sh
 COPY vpn.sh /vpn.sh
+CMD ["/vpn.sh"]
 CMD ["/runner.sh"]
