@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="reference" basedir="."
+         default="init" description="Reference project example build file.">
+
+  <property name="settings.only_push_by_tag" value="true" />
+  <if>
+    <not><isset property="settings.tag" /></not>
+    <then>
+      <gitdescribe repository="." abbrev="0" tags="true" outputProperty="settings.tag" />
+    </then>
+  </if>
+
+  <property name="settings.build_dir" value=".build" />
+  <property name="settings.remotes.configs" value="build/remotes" />
+  <property name="settings.includes" value="vendor/**" />
+  <property name="settings.excludes" value="docroot/sites/default/**" />
+
+  <property file="build/build.yml" override="true"/>
+
+  <patternset id="drupal_default_core" includes="${settings.includes}" excludes="${settings.excludes}">
+  </patternset>
+
+  <fileset dir="${settings.remotes.configs}" id="load_remotes">
+    <include name="*/*.yml" />
+  </fileset>
+
+  <tstamp>
+      <format property="buildtime" pattern="%a, %d %b %Y, %H:%M"/>
+  </tstamp>
+
+  <target name="init" depends="general:clean, general:install">
+    <foreach param="filename" absparam="absfilename" target="remote:init">
+      <fileset refid="load_remotes" >
+      </fileset>
+    </foreach>
+  </target>
+
+  <target name="general:clean">
+    <delete dir="${settings.build_dir}" includeemptydirs="true" verbose="false" failonerror="false" />
+  </target>
+
+  <target name="general:install">
+    <echo msg="Start composer install" />
+    <composer command="install" composer="/usr/bin/composer">
+        <arg value="--optimize-autoloader" />
+        <arg value="--no-dev" />
+        <arg value="--no-interaction" />
+    </composer>
+  </target>
+
+  <target name="general:version">
+  </target>
+
+  <target name="remote:init">
+    <dirname property="dirname" file="${absfilename}"/>
+    <property name="remote.build_dir" value="${settings.build_dir}/remotes/" />
+    <property name="remote.dir" value="${dirname}" />
+    <property file="${absfilename}" override="true" prefix="remote"/>
+    <if>
+      <not><isset property="remote.rootfs" /></not>
+      <then>
+        <property name="remote.rootfs" value="${dirname}/rootfs" />
+      </then>
+    </if>
+    <phingcall target="remote:build"></phingcall>
+  </target>
+
+  <target name="remote:checkout">
+      <gitclone repository="${remote.repository}" targetPath="${settings.build_dir}" />
+      <delete includeemptydirs="true" verbose="false" failonerror="false" >
+          <fileset dir="${settings.build_dir}">
+            <exclude name="*.git/**/*" />
+          </fileset>
+      </delete>
+  </target>
+
+  <target name="remote:clean">
+    <delete dir="${settings.build_dir}" includeemptydirs="true" verbose="false" failonerror="false" />
+  </target>
+
+  <target name="remote:build" depends="remote:clean, remote:checkout">
+    <copy todir="${settings.build_dir}" verbose="false" >
+      <fileset dir=".">
+        <patternset refid="drupal_default_core">
+        </patternset>
+        <patternset includes="${remote.includes}" excludes="${remote.excludes}">
+        </patternset>
+      </fileset>
+    </copy>
+    <phingcall target="remote:copy"></phingcall>
+    <phingcall target="remote:push"></phingcall>
+  </target>
+
+  <target name="remote:copy">
+    <if>
+      <available file="${remote.rootfs}" type="dir" />
+      <then>
+        <echo msg="Copy from rootfs" />
+        <copy todir="${settings.build_dir}" overwrite="true" verbose="false" >
+          <fileset dir="${remote.rootfs}">
+            <include name="**/*"/>
+          </fileset>
+        </copy>
+      </then>
+      <else>
+        <echo msg="No rootfs" />
+      </else>
+    </if>
+  </target>
+
+  <target name="remote:push">
+    <exec command="ssh-keyscan ${remote.server} >> ~/.ssh/known_hosts" />
+    <exec command="git add -A" dir="${settings.build_dir}" checkreturn="true" />
+    <exec command="git -c user.email=$remote.mail -c user.name='${remote.name}' commit -am 'Update'" dir="${settings.build_dir}" />
+    <exec command="git -c user.email=$remote.mail -c user.name='${remote.name}' tag -a -m 'Release: ${settings.tag}' ${settings.tag}" dir="${settings.build_dir}" />
+    <exec command="git -c user.email=$remote.mail -c user.name='${remote.name}' push --force origin master" dir="${settings.build_dir}"  />
+    <exec command="git -c user.email=$remote.mail -c user.name='${remote.name}' push --force origin ${settings.tag}" dir="${settings.build_dir}"  />
+  </target>
+</project>
