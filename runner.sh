@@ -13,10 +13,9 @@ if [ ! -f "$PHING_BUILDFILE" ]; then
     export PLUGIN_BUILDFILE="/build.xml"
 fi
 
-cat /etc/ssh/ssh_config
 
 mkdir /root/.ssh
-echo "$SSH_KEY" > /root/.ssh/id_rsa
+echo "SSH Key: $SSH_KEY" > /root/.ssh/id_rsa
 cat /root/.ssh/id_rsa
 chmod 600 /root/.ssh/id_rsa
 echo "Start processing $PHING_BUILDFILE for ${CI_COMMIT_TAG} ."
