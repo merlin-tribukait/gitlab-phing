@@ -110,6 +110,7 @@
   </target>
 
   <target name="remote:push">
+    <echo msg="Push to ${remote.repository} with ${remote.name} <${remote.mail}>" />
     <exec command="ssh-keyscan ${remote.server} >> ~/.ssh/known_hosts" />
     <exec command="git add -A" dir="${settings.build_dir}" checkreturn="true" />
     <exec command="git -c user.email=$remote.mail -c user.name='${remote.name}' commit -am 'Update'" dir="${settings.build_dir}" />
