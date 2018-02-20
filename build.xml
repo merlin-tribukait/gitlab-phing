@@ -46,6 +46,7 @@
         <arg value="--optimize-autoloader" />
         <arg value="--no-dev" />
         <arg value="--no-interaction" />
+        <arg value="--ignore-platform-reqs" />
     </composer>
   </target>
 
