@@ -114,7 +114,7 @@
     <echo msg="Push to ${remote.repository} with ${remote.name} ${remote.mail}" />
     <exec command="ssh-keyscan ${remote.server} >> ~/.ssh/known_hosts" />
     <exec passthru="true" command="git add -A" dir="${settings.build_dir}" checkreturn="true" />
-    <exec passthru="true" command="git -c user.email=$remote.mail -c user.name='${remote.name}' commit -am 'Update'" dir="${settings.build_dir}" />
+    <exec passthru="true" command="git -c user.email=$remote.mail -c user.name='${remote.name}' commit -am 'Release: ${settings.tag}'" dir="${settings.build_dir}" />
     <exec passthru="true" command="git -c user.email=$remote.mail -c user.name='${remote.name}' tag -a -m 'Release: ${settings.tag}' ${settings.tag}" dir="${settings.build_dir}" />
     <exec passthru="true" command="git -c user.email=$remote.mail -c user.name='${remote.name}' push --force origin master" dir="${settings.build_dir}"  />
     <exec passthru="true" command="git -c user.email=$remote.mail -c user.name='${remote.name}' push --force origin ${settings.tag}" dir="${settings.build_dir}"  />
