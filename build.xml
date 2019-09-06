@@ -29,7 +29,7 @@
       <format property="buildtime" pattern="%a, %d %b %Y, %H:%M"/>
   </tstamp>
 
-  <target name="init" depends="general:clean, general:install">
+  <target name="init" depends="general:clean">
     <foreach param="filename" absparam="absfilename" target="remote:init">
       <fileset refid="load_remotes" >
       </fileset>
@@ -38,16 +38,6 @@
 
   <target name="general:clean">
     <delete dir="${settings.build_dir}" includeemptydirs="true" verbose="false" failonerror="false" />
-  </target>
-
-  <target name="general:install">
-    <echo msg="Start composer install" />
-    <composer command="install" composer="/usr/bin/composer">
-        <arg value="--optimize-autoloader" />
-        <arg value="--no-dev" />
-        <arg value="--no-interaction" />
-        <arg value="--ignore-platform-reqs" />
-    </composer>
   </target>
 
   <target name="general:version">
